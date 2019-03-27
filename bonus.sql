@@ -57,3 +57,18 @@ VALUES
     ('Comment2', '2019-03-16 20:45:44', 10),
     ('Comment2', '2019-03-15 20:45:44', 11);
 
+-- `select 10 most recent news articles
+SELECT news.newsId, news.`date`, news.`text`
+    FROM news
+    ORDER BY news.`date` desc
+    LIMIT 10;
+
+-- not fully functioning query (do not select most recent coment)
+SELECT comments.commentId, comments.`text` AS `commentText`, comments.`date` as `commentDate`, articles.`text` AS `articleText`, articles.`date`
+    FROM comments
+    INNER JOIN 
+        (SELECT news.newsId, news.`date`, news.`text`
+        FROM news
+        ORDER BY news.`date` desc
+        LIMIT 10) AS articles
+        ON articles.newsId = comments.commentId;
