@@ -63,12 +63,14 @@ SELECT news.newsId, news.`date`, news.`text`
     ORDER BY news.`date` desc
     LIMIT 10;
 
--- not fully functioning query (do not select most recent coment)
-SELECT comments.commentId, comments.`text` AS `commentText`, comments.`date` as `commentDate`, articles.`text` AS `articleText`, articles.`date`
-    FROM comments
-    INNER JOIN 
-        (SELECT news.newsId, news.`date`, news.`text`
-        FROM news
-        ORDER BY news.`date` desc
-        LIMIT 10) AS articles
-        ON articles.newsId = comments.commentId;
+-- not the best solution but i couldn't fint better :D
+SELECT news.newsId, news.`date` AS `articleDate`, news.`text` AS `articleText`, most_recent_comment, comments.`text` AS `commentText`
+FROM news
+INNER JOIN 
+  (SELECT comments.newsId, max(comments.`date`) AS most_recent_comment 
+  FROM comments 
+  GROUP BY comments.newsId) AS most_recent_comments 
+ON news.newsId = most_recent_comments.newsId
+INNER JOIN comments ON comments.`date` = most_recent_comment 
+ORDER BY news.`date` DESC
+LIMIT 10;
